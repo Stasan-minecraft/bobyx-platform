@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bobyx — Play</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+</head>
+<body>
+<header>
+  <h1>Bobyx — Гра</h1>
+  <nav><a href="/">\u041aлієнт</a> <a href="/studio/">\u0421тудія</a></nav>
+</header>
+<main class="container">
+  <h2>\u0406гра</h2>
+  <pre id="gameData" style="background:#111; color:#0f0; padding:8px; overflow:auto; max-width:100%; height:400px;"></pre>
+</main>
+<script>
+(async function(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  const gameDataElem = document.getElementById('gameData');
+  if(!id){
+    gameDataElem.textContent = 'ID гри не вказано.';
+    return;
+  }
+  try {
+    const res = await fetch('/api/games/' + id + '/scene');
+    if(!res.ok){
+      gameDataElem.textContent = '\u0421\u0446\u0435\u043d\u0430 не знайдена';
+      return;
+    }
+    const data = await res.json();
+    gameDataElem.textContent = JSON.stringify(data, null, 2);
+  } catch (e){
+    gameDataElem.textContent = '\u041f\u043e\u043c\u0438\u043b\u043a\u0430 \u043f\u0438\u0442\u0430\u043d\u043d\u044f \u0434\u043e API';
+  }
+})();
+</script>
+</body>
+</html>
