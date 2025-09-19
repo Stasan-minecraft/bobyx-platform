@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bobyx — Студія</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+<header>
+  <h1>Bobyx — Студія</h1>
+  <nav><a href="/">\u041a\u043b\u0456\u0454\u043d\u0442</a></nav>
+</header>
+<main class="container">
+  <label>\u041dазва гри:<br><input id="name"></label><br>
+  <label>\u041eпис:<br><input id="desc"></label><br>
+  <label>Scene JSON:<br><textarea id="scene" rows="10" cols="60">{}</textarea></label><br>
+  <button id="saveBtn" class="btn">\u0417берегти</button>
+  <p id="status"></p>
+</main>
+<script>
+document.getElementById('saveBtn').addEventListener('click', async function() {
+  var name = document.getElementById('name').value.trim();
+  var description = document.getElementById('desc').value.trim();
+  var scene = document.getElementById('scene').value.trim();
+  if (!name) {
+    document.getElementById('status').innerText = '\u0412\u043a\u0430\u0436\u0438 \u043d\u0430\u0437\u0432\u0443 \u0433\u0440\u0438';
+    return;
+  }
+  try {
+    var res = await fetch('/api/games', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name, description: description, scene_json: scene })
+    });
+    var data = await res.json();
+    if (res.ok) {
+      document.getElementById('status').innerText = '\u0413\u0440\u0443 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043d\u043e! ID: ' + data.id;
+    } else {
+      document.getElementById('status').innerText = '\u041f\u043e\u043c\u0438\u043b\u043a\u0430: ' + (data.error || '');
+    }
+  } catch (e) {
+    document.getElementById('status').innerText = '\u041f\u043e\u043c\u0438\u043b\u043a\u0430 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043d\u043d\u044f \u0433\u0440\u0438';
+  }
+});
+</script>
+</body>
+</html>
